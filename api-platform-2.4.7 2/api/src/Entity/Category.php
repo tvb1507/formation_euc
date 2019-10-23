@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -64,4 +66,29 @@ class Category
      * @Groups({"Category/Collection/Read"})
      */
     public $isActive = true;
+
+    /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="categories")
+     */
+    public $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
+
+    public function addProduct(Product $product): void
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+        }
+    }
+
+    public function removeProduct(Product $product): void
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+        }
+    }
 }

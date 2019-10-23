@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -55,8 +57,29 @@ class Product
     public $price;
 
     /**
-     * @var string Product category.
-     * @ORM\Column
+     * @var Collection Product category.
+     * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="products")
      */
     public $categories;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
+
+    public function addCategory(Category $category): void
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->addProduct($this);
+        }
+    }
+
+    public function removeCategory(Category $category): void
+    {
+        if ($this->categories->contains($category)) {
+            $category->removeProduct($this);
+            $this->categories->removeElement($category);
+        }
+    }
 }

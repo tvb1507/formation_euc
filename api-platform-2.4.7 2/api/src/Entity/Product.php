@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 
 /**
  * @ApiResource(
@@ -22,9 +26,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "Custom" = {"method"="GET", "path"="Mon/Chemin"}
  *     },
  *     itemOperations={
- *          "get"
+ *          "get" = {
+ *              "normalization_context" = {
+ *                  "groups" = {"Product/Item/Read"}
+ *              }
+ *          }
  *     }
  * )
+ * @ApiFilter(SearchFilter::class, properties={"name": "ipartial"})
+ * @ApiFilter(OrderFilter::class, properties={"price"})
+ * @ApiFilter(PropertyFilter::class)
  * @ORM\Entity
  */
 class Product
@@ -34,7 +45,7 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
-     * @Groups({"Product/Collection/Read"})
+     * @Groups({"Product/Collection/Read", "Product/Item/Read"})
      */
     public $id;
 
@@ -43,7 +54,7 @@ class Product
      * @ORM\Column
      * @Assert\NotBlank()
      * @Assert\Length(min="2")
-     * @Groups({"Product/Collection/Read"})
+     * @Groups({"Product/Collection/Read", "Product/Item/Read"})
      */
     public $name;
 
@@ -53,12 +64,14 @@ class Product
      * @Assert\NotBlank()
      * @Assert\Type(type="int")
      * @Assert\GreaterThan(0)
+     * @Groups({"Product/Item/Read", "Product/Collection/Read"})
      */
     public $price;
 
     /**
      * @var Collection Product category.
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="products")
+     * @Groups({"Product/Collection/Read", "Product/Item/Read"})
      */
     public $categories;
 

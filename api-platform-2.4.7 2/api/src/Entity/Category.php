@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -48,7 +49,8 @@ class Category
      * @ORM\Column
      * @Assert\NotBlank
      * @Assert\Length(min="2")
-     * @Groups({"Category/Item/Read", "Category/Collection/Read"})
+     * @Groups({"Category/Item/Read", "Category/Collection/Read", "Product/Collection/Read", "Product/Item/Read"})
+     * @ApiProperty(iri="http://schema.org/name")
      */
     public $name;
 
@@ -56,7 +58,7 @@ class Category
      * @ORM\Column
      * @Assert\NotBlank
      * @Assert\Length(min="10")
-     * @Groups({"Category/Item/Read"})
+     * @Groups({"Category/Item/Read", "Product/Item/Read"})
      */
     public $description;
 

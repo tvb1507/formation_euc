@@ -31,3 +31,9 @@ api_platform:
         yaml:     ['application/x-yaml']
         csv:      ['text/csv']
         html:     ['text/html']
+
+    swagger:
+        api_keys:
+            apiKey:
+                name: Authorization
+                type: header

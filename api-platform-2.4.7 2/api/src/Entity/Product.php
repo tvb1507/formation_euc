@@ -75,9 +75,17 @@ class Product
      */
     public $categories;
 
+    /**
+     * @var Customer
+     * @ORM\ManyToMany(targetEntity=Customer::class, mappedBy="products")
+     * @Groups({"Product/Collection/Read", "Product/Item/Read"})
+     */
+    public $customers;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->customers = new ArrayCollection();
     }
 
     public function addCategory(Category $category): void
@@ -93,6 +101,20 @@ class Product
         if ($this->categories->contains($category)) {
             $category->removeProduct($this);
             $this->categories->removeElement($category);
+        }
+    }
+
+    public function addCustomer(Customer $customer): void
+    {
+        if (!$this->customers->contains($customer)) {
+            $this->customers->add($customer);
+        }
+    }
+
+    public function removeCustomer(Customer $customer): void
+    {
+        if ($this->customers->contains($customer)) {
+            $this->customers->removeElement($customer);
         }
     }
 }

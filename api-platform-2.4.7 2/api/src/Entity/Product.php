@@ -23,13 +23,15 @@ use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
  *                  "groups" = {"Product/Collection/Read"}
  *              }
  *          },
- *          "Custom" = {"method"="GET", "path"="Mon/Chemin"}
+ *          "Custom" = {"method"="GET", "path"="Mon/Chemin"},
+ *          "post"
  *     },
  *     itemOperations={
  *          "get" = {
  *              "normalization_context" = {
  *                  "groups" = {"Product/Item/Read"}
- *              }
+ *              },
+ *              "access_control" = "is_granted('ROLE_ADMIN') or object.customers.contains(user)"
  *          }
  *     }
  * )
